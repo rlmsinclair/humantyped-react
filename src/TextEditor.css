@@ -215,21 +215,69 @@ html, body {
     color: #60A5FA;
 }
 
-/* Responsive styles */
-@media (max-width: 1400px) {
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .title {
+        font-size: 32px;
+        text-align: center;
+        padding: 0 10px;
+    }
+
+    .content-wrapper {
+        padding: 10px;
+    }
+
     .main-container {
         flex-direction: column;
+        padding: 0 10px;
+        gap: 10px;
     }
 
     .editor-section,
     .chart-section {
         min-width: 0;
+        width: 100%;
     }
 
     .text-input,
-    .preview-area,
+    .preview-area {
+        height: 300px;
+    }
+
     .chart-container {
-        height: 400px;
+        height: auto;
+        padding: 10px;
+    }
+
+    .chart-wrapper {
+        overflow-x: auto;
+    }
+
+    .chart-title {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .chart-subtitle {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .verify-button {
+        width: 100%;
+        max-width: none;
+        margin: 10px 0;
+    }
+
+    .url-container {
+        margin: 10px 0;
+        padding: 12px;
+        word-break: break-all;
+    }
+
+    .custom-tooltip {
+        max-width: 200px;
+        font-size: 14px;
     }
 }
 

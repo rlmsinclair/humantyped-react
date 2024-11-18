@@ -1,6 +1,5 @@
-// src/App.tsx
 import { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 import './TextEditor.css';
 
 interface KeyPress {
@@ -16,7 +15,6 @@ interface ChartData {
     character: string;
 }
 
-// Custom tooltip component for the charts
 const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
         const data = payload[0].payload;
@@ -39,7 +37,14 @@ const TextEditor = () => {
     const [keyPresses, setKeyPresses] = useState<KeyPress[]>([]);
     const [submittedUrl, setSubmittedUrl] = useState<string>('');
     const [documentId, setDocumentId] = useState<string | null>(null);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const API_BASE_URL = 'https://hammerhead-app-2-hz4n4.ondigitalocean.app';
+
+    useEffect(() => {
+        const handleResize = () => setWindowWidth(window.innerWidth);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         const createDocument = async () => {
@@ -74,10 +79,9 @@ const TextEditor = () => {
         if (presses.length === 0) return [];
 
         const data: ChartData[] = [];
-        const windowSize = 5; // Number of keypresses to average over
+        const windowSize = 5;
 
         for (let i = 0; i < presses.length; i++) {
-            // Calculate typing speed based on moving average
             let typingSpeed = 0;
             if (i >= windowSize) {
                 const recentPresses = presses.slice(i - windowSize, i + 1);
@@ -100,7 +104,6 @@ const TextEditor = () => {
     const handleTextChange = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newContent = e.target.value;
         if (newContent.length < content.length) {
-            // Handle deletion - update content but don't record as a keypress
             setContent(newContent);
             return;
         }
@@ -166,7 +169,6 @@ const TextEditor = () => {
             const data = await response.json();
             setSubmittedUrl(data.verification_url);
 
-            // Log statistics if available
             if (data.statistics) {
                 console.log('Typing Analysis:', {
                     'Total Characters': data.statistics.total_characters,
@@ -189,12 +191,12 @@ const TextEditor = () => {
 
                 <div className="main-container">
                     <div className="editor-section">
-                            <textarea
-                                value={content}
-                                onChange={handleTextChange}
-                                className="text-input"
-                                placeholder="Start typing your content here..."
-                            />
+                        <textarea
+                            value={content}
+                            onChange={handleTextChange}
+                            className="text-input"
+                            placeholder="Start typing your content here..."
+                        />
                     </div>
 
                     <div className="chart-section">
@@ -203,32 +205,33 @@ const TextEditor = () => {
                             <div className="chart-wrapper">
                                 <div className="chart-box">
                                     <h3 className="chart-subtitle">Typing Speed</h3>
-                                    <LineChart
-                                        width={550}
-                                        height={250}
-                                        data={chartData}
-                                        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-                                    >
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                                        <XAxis
-                                            dataKey="time"
-                                            stroke="#9CA3AF"
-                                            tick={{ fill: '#9CA3AF' }}
-                                        />
-                                        <YAxis
-                                            stroke="#9CA3AF"
-                                            tick={{ fill: '#9CA3AF' }}
-                                        />
-                                        <Tooltip content={<CustomTooltip />} />
-                                        <Line
-                                            type="monotone"
-                                            dataKey="typingSpeed"
-                                            name="Typing Speed (CPM)"
-                                            stroke="#60A5FA"
-                                            strokeWidth={2}
-                                            dot
-                                        />
-                                    </LineChart>
+                                    <ResponsiveContainer width="100%" height={250}>
+                                        <LineChart
+                                            data={chartData}
+                                            margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
+                                        >
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                                            <XAxis
+                                                dataKey="time"
+                                                stroke="#9CA3AF"
+                                                tick={{ fill: '#9CA3AF', fontSize: windowWidth < 768 ? 10 : 12 }}
+                                                interval={windowWidth < 768 ? 2 : 0}
+                                            />
+                                            <YAxis
+                                                stroke="#9CA3AF"
+                                                tick={{ fill: '#9CA3AF', fontSize: windowWidth < 768 ? 10 : 12 }}
+                                            />
+                                            <Tooltip content={<CustomTooltip />} />
+                                            <Line
+                                                type="monotone"
+                                                dataKey="typingSpeed"
+                                                name="Typing Speed (CPM)"
+                                                stroke="#60A5FA"
+                                                strokeWidth={2}
+                                                dot={windowWidth >= 768}
+                                            />
+                                        </LineChart>
+                                    </ResponsiveContainer>
                                 </div>
                             </div>
                         </div>
