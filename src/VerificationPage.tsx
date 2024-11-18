@@ -113,24 +113,24 @@ const VerificationPage = () => {
                                     <ResponsiveContainer width="100%" height={250}>
                                         <LineChart
                                             data={chartData}
-                                            margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
+                                            margin={{top: 5, right: 10, left: -20, bottom: 5}}
                                         >
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#374151"/>
                                             <XAxis
                                                 dataKey="time"
                                                 stroke="#9CA3AF"
-                                                tick={{ fill: '#9CA3AF', fontSize: windowWidth < 768 ? 10 : 12 }}
+                                                tick={{fill: '#9CA3AF', fontSize: windowWidth < 768 ? 10 : 12}}
                                                 interval={windowWidth < 768 ? 2 : 0}
                                             />
                                             <YAxis
                                                 stroke="#9CA3AF"
-                                                tick={{ fill: '#9CA3AF', fontSize: windowWidth < 768 ? 10 : 12 }}
+                                                tick={{fill: '#9CA3AF', fontSize: windowWidth < 768 ? 10 : 12}}
                                             />
-                                            <Tooltip content={<CustomTooltip />} />
+                                            <Tooltip content={<CustomTooltip/>}/>
                                             <Line
                                                 type="monotone"
                                                 dataKey="typingSpeed"
-                                                name="Estimated Typing Speed (WPM)"
+                                                name="Typing Speed (CPM)"
                                                 stroke="#60A5FA"
                                                 strokeWidth={2}
                                                 dot={windowWidth >= 768}
