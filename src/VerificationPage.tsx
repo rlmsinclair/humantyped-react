@@ -68,16 +68,20 @@ const VerificationPage = () => {
                     const chartPoints = data.keypresses.map((press: any) => ({
                         time: new Date(press.timestamp).toLocaleTimeString(),
                         charactersTyped: press.total_characters,
-                        typingSpeed: press.typing_speed,
+                        typingSpeed: Math.round(press.typing_speed / 5), // Convert CPM to WPM
                         character: press.character
                     }));
 
                     setChartData(chartPoints);
 
+                    // Calculate WPM: (total characters / 5) / minutes
+                    const minutes = data.document.time_taken_seconds / 60;
+                    const wpm = Math.round((data.document.total_characters / 5) / minutes);
+
                     setStatistics({
                         totalCharacters: data.document.total_characters,
                         duration: data.document.time_taken_seconds,
-                        averageSpeed: data.document.final_typing_speed
+                        averageSpeed: wpm
                     });
                 }
             } catch (error) {
@@ -126,7 +130,7 @@ const VerificationPage = () => {
                                             <Line
                                                 type="monotone"
                                                 dataKey="typingSpeed"
-                                                name="Typing Speed (CPM)"
+                                                name="Estimated Typing Speed (WPM)"
                                                 stroke="#60A5FA"
                                                 strokeWidth={2}
                                                 dot={windowWidth >= 768}
@@ -148,8 +152,8 @@ const VerificationPage = () => {
                                                 <p className="stat-value">{formatDuration(statistics.duration)}</p>
                                             </div>
                                             <div className="stat-item">
-                                                <h3>Average Speed</h3>
-                                                <p className="stat-value">{statistics.averageSpeed} CPM</p>
+                                                <h3>Estimated Average Speed</h3>
+                                                <p className="stat-value">{statistics.averageSpeed} WPM</p>
                                             </div>
                                         </div>
                                     </div>
