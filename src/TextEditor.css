@@ -1,0 +1,333 @@
+/* Base styles and resets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Main container styles */
+.app-container {
+    height: 100vh;
+    background-color: #1a1a1a;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.content-wrapper {
+    flex: 1;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    padding: 0 20px;
+}
+
+/* Layout containers */
+.main-container {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+    padding: 0 20px;
+    overflow: hidden;
+}
+
+.editor-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 600px;
+}
+
+.chart-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 600px;
+}
+
+/* Button styles */
+.preview-button {
+    align-self: flex-start;
+    padding: 10px 24px;
+    background-color: #2d2d2d;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.preview-button:hover {
+    background-color: #3d3d3d;
+}
+
+.verify-button {
+    padding: 12px 32px;
+    background-color: #2563eb;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    max-width: 200px;
+    margin: 20px auto;
+}
+
+.verify-button:hover {
+    background-color: #1d4ed8;
+}
+
+/* Text input and preview area */
+.text-input {
+    width: 100%;
+    height: calc(100vh - 200px);
+    padding: 20px;
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    color: white;
+    font-size: 16px;
+    resize: none;
+}
+
+.text-input:focus {
+    outline: none;
+    border-color: #4d4d4d;
+}
+
+.preview-area {
+    width: 100%;
+    height: calc(100vh - 200px);
+    padding: 20px;
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    color: white;
+    overflow-y: auto;
+}
+
+/* URL container styles */
+.url-container {
+    padding: 16px;
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.url-link {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+.url-link:hover {
+    color: #93c5fd;
+}
+
+/* Chart styles */
+.chart-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #2d2d2d;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    padding: 20px;
+    height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.chart-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.chart-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.chart-subtitle {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    text-align: center;
+    color: #9CA3AF;
+}
+
+.chart-box {
+    background-color: #1F2937;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+/* Tooltip styles */
+.custom-tooltip {
+    background-color: #1F2937;
+    border: 1px solid #374151;
+    border-radius: 4px;
+    padding: 12px;
+    color: white;
+}
+
+.tooltip-time {
+    color: #9CA3AF;
+    margin-bottom: 8px;
+}
+
+.tooltip-character {
+    color: #60A5FA;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.tooltip-count {
+    color: #34D399;
+    margin-bottom: 8px;
+}
+
+.tooltip-speed {
+    color: #60A5FA;
+}
+
+/* Responsive styles */
+@media (max-width: 1400px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .editor-section,
+    .chart-section {
+        min-width: 0;
+    }
+
+    .text-input,
+    .preview-area,
+    .chart-container {
+        height: 400px;
+    }
+}
+
+/* Markdown preview styles */
+.preview-area {
+    line-height: 1.6;
+}
+
+.preview-area h1,
+.preview-area h2,
+.preview-area h3,
+.preview-area h4,
+.preview-area h5,
+.preview-area h6 {
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+.preview-area p {
+    margin-bottom: 1em;
+}
+
+.preview-area ul,
+.preview-area ol {
+    margin-bottom: 1em;
+    padding-left: 2em;
+}
+
+.preview-area code {
+    background-color: #1F2937;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.preview-area pre {
+    background-color: #1F2937;
+    padding: 1em;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin-bottom: 1em;
+}
+
+.preview-area blockquote {
+    border-left: 4px solid #3d3d3d;
+    padding-left: 1em;
+    margin-left: 0;
+    margin-bottom: 1em;
+    color: #9CA3AF;
+}
+
+.preview-area a {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+.preview-area a:hover {
+    text-decoration: underline;
+}
+
+.preview-area table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+}
+
+.preview-area th,
+.preview-area td {
+    border: 1px solid #3d3d3d;
+    padding: 0.5em;
+    text-align: left;
+}
+
+.preview-area th {
+    background-color: #1F2937;
+}
+
+.preview-area img {
+    max-width: 100%;
+    height: auto;
+    margin: 1em 0;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3d3d3d;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #4d4d4d;
+}
