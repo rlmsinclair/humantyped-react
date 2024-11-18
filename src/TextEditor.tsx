@@ -1,6 +1,5 @@
 // src/App.tsx
 import { useState, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import './TextEditor.css';
 
@@ -38,7 +37,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 const TextEditor = () => {
     const [content, setContent] = useState<string>('');
     const [keyPresses, setKeyPresses] = useState<KeyPress[]>([]);
-    const [previewMode, setPreviewMode] = useState<boolean>(false);
     const [submittedUrl, setSubmittedUrl] = useState<string>('');
     const [documentId, setDocumentId] = useState<string | null>(null);
     const API_BASE_URL = 'https://hammerhead-app-2-hz4n4.ondigitalocean.app';
@@ -191,25 +189,13 @@ const TextEditor = () => {
 
                 <div className="main-container">
                     <div className="editor-section">
-                        <button
-                            className="preview-button"
-                            onClick={() => setPreviewMode(!previewMode)}
-                        >
-                            {previewMode ? 'Edit' : 'Preview'}
-                        </button>
-
-                        {previewMode ? (
-                            <div className="preview-area">
-                                <ReactMarkdown>{content}</ReactMarkdown>
-                            </div>
-                        ) : (
                             <textarea
                                 value={content}
                                 onChange={handleTextChange}
                                 className="text-input"
                                 placeholder="Start typing your content here..."
                             />
-                        )}
+                        )
                     </div>
 
                     <div className="chart-section">
