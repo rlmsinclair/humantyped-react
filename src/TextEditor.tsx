@@ -195,7 +195,6 @@ const TextEditor = () => {
                                 className="text-input"
                                 placeholder="Start typing your content here..."
                             />
-                        )
                     </div>
 
                     <div className="chart-section">
