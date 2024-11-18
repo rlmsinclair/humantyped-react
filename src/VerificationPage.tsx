@@ -43,6 +43,25 @@ const formatDuration = (seconds: number): string => {
     return remainingSeconds > 0 ? `${minutes} minutes ${remainingSeconds} seconds` : `${minutes} minutes`;
 };
 
+const calculateRollingSpeed = (keypresses: any[]) => {
+    const windowSize = 5;
+    return keypresses.map((press, index) => {
+        let typingSpeed = 0;
+        if (index >= windowSize - 1) {
+            const windowStart = keypresses[index - (windowSize - 1)];
+            const windowEnd = press;
+            const timeSpan = new Date(windowEnd.timestamp).getTime() - new Date(windowStart.timestamp).getTime();
+            typingSpeed = Math.round((windowSize * 60 * 1000) / timeSpan);
+        }
+        return {
+            time: new Date(press.timestamp).toLocaleTimeString(),
+            charactersTyped: press.total_characters,
+            typingSpeed,
+            character: press.character
+        };
+    });
+};
+
 const VerificationPage = () => {
     const { id } = useParams<{ id: string }>();
     const [content, setContent] = useState<string>('');
@@ -65,23 +84,19 @@ const VerificationPage = () => {
                 setContent(data.document.content);
 
                 if (data.keypresses?.length > 0) {
-                    const chartPoints = data.keypresses.map((press: any) => ({
-                        time: new Date(press.timestamp).toLocaleTimeString(),
-                        charactersTyped: press.total_characters,
-                        typingSpeed: Math.round(press.typing_speed / 5), // Convert CPM to WPM
-                        character: press.character
-                    }));
-
+                    const chartPoints = calculateRollingSpeed(data.keypresses);
                     setChartData(chartPoints);
 
-                    // Calculate WPM: (total characters / 5) / minutes
-                    const minutes = data.document.time_taken_seconds / 60;
-                    const wpm = Math.round((data.document.total_characters / 5) / minutes);
+                    // Calculate statistics using CPM from the last few keypresses
+                    const lastFewKeypresses = data.keypresses.slice(-5);
+                    const timeSpan = new Date(lastFewKeypresses[lastFewKeypresses.length - 1].timestamp).getTime() -
+                        new Date(lastFewKeypresses[0].timestamp).getTime();
+                    const finalSpeed = Math.round((lastFewKeypresses.length * 60 * 1000) / timeSpan);
 
                     setStatistics({
                         totalCharacters: data.document.total_characters,
                         duration: data.document.time_taken_seconds,
-                        averageSpeed: wpm
+                        averageSpeed: finalSpeed
                     });
                 }
             } catch (error) {
@@ -152,8 +167,8 @@ const VerificationPage = () => {
                                                 <p className="stat-value">{formatDuration(statistics.duration)}</p>
                                             </div>
                                             <div className="stat-item">
-                                                <h3>Estimated Average Speed</h3>
-                                                <p className="stat-value">{statistics.averageSpeed} WPM</p>
+                                                <h3>Average Speed</h3>
+                                                <p className="stat-value">{statistics.averageSpeed} CPM</p>
                                             </div>
                                         </div>
                                     </div>
