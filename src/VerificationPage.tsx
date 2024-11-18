@@ -74,7 +74,7 @@ const VerificationPage = () => {
                     const startTime = new Date(data.keypresses[0].timestamp).getTime();
                     const endTime = new Date(data.keypresses[data.keypresses.length - 1].timestamp).getTime();
                     const durationSeconds = (endTime - startTime) / 1000;
-                    const averageSpeed = Math.round((data.keypresses.length * 60) / (durationSeconds / 60));
+                    const averageSpeed = Math.round((data.keypresses.length) / (durationSeconds / 60));
 
                     setStatistics({
                         totalCharacters: data.keypresses.length,
