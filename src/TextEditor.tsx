@@ -207,7 +207,7 @@ const TextEditor = () => {
                                 value={content}
                                 onChange={handleTextChange}
                                 className="text-input"
-                                placeholder="Start typing your content here... Markdown is supported!"
+                                placeholder="Start typing your content here..."
                             />
                         )}
                     </div>
