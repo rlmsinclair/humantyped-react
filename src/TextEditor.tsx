@@ -35,8 +35,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 const TextEditor = () => {
     const [content, setContent] = useState<string>('');
     const [keyPresses, setKeyPresses] = useState<KeyPress[]>([]);
-    const [submittedUrl, setSubmittedUrl] = useState<string>('');
-    const [documentId, setDocumentId] = useState<string | null>(null);
+    const [submittedUrl, setSubmittedUrl] = useState<string>('');    const [documentId, setDocumentId] = useState<string | null>(null);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const API_BASE_URL = 'https://hammerhead-app-2-hz4n4.ondigitalocean.app';
 
@@ -167,7 +166,8 @@ const TextEditor = () => {
             }
 
             const data = await response.json();
-            setSubmittedUrl(data.verification_url);
+            const verificationUrl = `https://humantyped.com${data.verification_url}`;
+            setSubmittedUrl(verificationUrl);
 
             if (data.statistics) {
                 console.log('Typing Analysis:', {
@@ -208,20 +208,20 @@ const TextEditor = () => {
                                     <ResponsiveContainer width="100%" height={250}>
                                         <LineChart
                                             data={chartData}
-                                            margin={{ top: 5, right: 10, left: -20, bottom: 5 }}
+                                            margin={{top: 5, right: 10, left: -20, bottom: 5}}
                                         >
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#374151"/>
                                             <XAxis
                                                 dataKey="time"
                                                 stroke="#9CA3AF"
-                                                tick={{ fill: '#9CA3AF', fontSize: windowWidth < 768 ? 10 : 12 }}
+                                                tick={{fill: '#9CA3AF', fontSize: windowWidth < 768 ? 10 : 12}}
                                                 interval={windowWidth < 768 ? 2 : 0}
                                             />
                                             <YAxis
                                                 stroke="#9CA3AF"
-                                                tick={{ fill: '#9CA3AF', fontSize: windowWidth < 768 ? 10 : 12 }}
+                                                tick={{fill: '#9CA3AF', fontSize: windowWidth < 768 ? 10 : 12}}
                                             />
-                                            <Tooltip content={<CustomTooltip />} />
+                                            <Tooltip content={<CustomTooltip/>}/>
                                             <Line
                                                 type="monotone"
                                                 dataKey="typingSpeed"
@@ -233,26 +233,26 @@ const TextEditor = () => {
                                         </LineChart>
                                     </ResponsiveContainer>
                                 </div>
+
+                                <button
+                                    onClick={handleSubmit}
+                                    className="verify-button"
+                                >
+                                    Verify My Typing
+                                </button>
+
+                                {submittedUrl && (
+                                    <div className="url-container">
+                                        <p>
+                                            Verification URL:{' '}
+                                            <a href={submittedUrl} className="url-link">
+                                                {submittedUrl}
+                                            </a>
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </div>
-
-                        <button
-                            onClick={handleSubmit}
-                            className="verify-button"
-                        >
-                            Verify My Typing
-                        </button>
-
-                        {submittedUrl && (
-                            <div className="url-container">
-                                <p>
-                                    Verification URL:{' '}
-                                    <a href={submittedUrl} className="url-link">
-                                        {submittedUrl}
-                                    </a>
-                                </p>
-                            </div>
-                        )}
                     </div>
                 </div>
             </div>

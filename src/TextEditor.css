@@ -1,4 +1,3 @@
-/* Base styles and resets */
 * {
     margin: 0;
     padding: 0;
@@ -12,7 +11,6 @@ html, body {
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-/* Main container styles */
 .app-container {
     height: 100vh;
     background-color: #1a1a1a;
@@ -38,7 +36,6 @@ html, body {
     padding: 0 20px;
 }
 
-/* Layout containers */
 .main-container {
     flex: 1;
     display: flex;
@@ -47,22 +44,19 @@ html, body {
     overflow: hidden;
 }
 
-.editor-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    min-width: 600px;
-}
-
+.editor-section,
 .chart-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 600px;
+    min-width: 0;
+    width: 100%;
+    height: calc(100vh - 120px);
 }
 
-/* Button styles */
+.text-input,
+.chart-container {
+    height: 100%;
+    min-height: 500px;
+}
+
 .preview-button {
     align-self: flex-start;
     padding: 10px 24px;
@@ -87,18 +81,17 @@ html, body {
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.3s;
+    width: 100%;
     max-width: 200px;
-    margin: 20px auto;
+    margin: 0 auto;
 }
 
 .verify-button:hover {
     background-color: #1d4ed8;
 }
 
-/* Text input and preview area */
 .text-input {
     width: 100%;
-    height: calc(100vh - 200px);
     padding: 20px;
     background-color: #2d2d2d;
     border: 1px solid #3d3d3d;
@@ -115,7 +108,6 @@ html, body {
 
 .preview-area {
     width: 100%;
-    height: calc(100vh - 200px);
     padding: 20px;
     background-color: #2d2d2d;
     border: 1px solid #3d3d3d;
@@ -124,14 +116,13 @@ html, body {
     overflow-y: auto;
 }
 
-/* URL container styles */
 .url-container {
     padding: 16px;
-    background-color: #2d2d2d;
-    border: 1px solid #3d3d3d;
+    background-color: #1F2937;
+    border: 1px solid #374151;
     border-radius: 4px;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 0;
 }
 
 .url-link {
@@ -143,7 +134,6 @@ html, body {
     color: #93c5fd;
 }
 
-/* Chart styles */
 .chart-container {
     flex: 1;
     display: flex;
@@ -152,7 +142,6 @@ html, body {
     border: 1px solid #3d3d3d;
     border-radius: 4px;
     padding: 20px;
-    height: calc(100vh - 200px);
     overflow-y: auto;
 }
 
@@ -186,7 +175,6 @@ html, body {
     margin-bottom: 20px;
 }
 
-/* Tooltip styles */
 .custom-tooltip {
     background-color: #1F2937;
     border: 1px solid #374151;
@@ -215,73 +203,6 @@ html, body {
     color: #60A5FA;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-    .title {
-        font-size: 32px;
-        text-align: center;
-        padding: 0 10px;
-    }
-
-    .content-wrapper {
-        padding: 10px;
-    }
-
-    .main-container {
-        flex-direction: column;
-        padding: 0 10px;
-        gap: 10px;
-    }
-
-    .editor-section,
-    .chart-section {
-        min-width: 0;
-        width: 100%;
-    }
-
-    .text-input,
-    .preview-area {
-        height: 300px;
-    }
-
-    .chart-container {
-        height: auto;
-        padding: 10px;
-    }
-
-    .chart-wrapper {
-        overflow-x: auto;
-    }
-
-    .chart-title {
-        font-size: 20px;
-        margin-bottom: 16px;
-    }
-
-    .chart-subtitle {
-        font-size: 16px;
-        margin-bottom: 12px;
-    }
-
-    .verify-button {
-        width: 100%;
-        max-width: none;
-        margin: 10px 0;
-    }
-
-    .url-container {
-        margin: 10px 0;
-        padding: 12px;
-        word-break: break-all;
-    }
-
-    .custom-tooltip {
-        max-width: 200px;
-        font-size: 14px;
-    }
-}
-
-/* Markdown preview styles */
 .preview-area {
     line-height: 1.6;
 }
@@ -361,7 +282,6 @@ html, body {
     margin: 1em 0;
 }
 
-/* Scrollbar styles */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -378,4 +298,64 @@ html, body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #4d4d4d;
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 32px;
+        text-align: center;
+        padding: 0 10px;
+    }
+
+    .content-wrapper {
+        padding: 10px;
+    }
+
+    .main-container {
+        flex-direction: column;
+        padding: 0 10px;
+        gap: 10px;
+    }
+
+    .editor-section,
+    .chart-section {
+        height: 500px;
+    }
+
+    .text-input,
+    .chart-container {
+        height: 100%;
+        min-height: auto;
+    }
+
+    .chart-wrapper {
+        overflow-x: auto;
+    }
+
+    .chart-title {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .chart-subtitle {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .verify-button {
+        width: 100%;
+        max-width: none;
+        margin: 10px 0;
+    }
+
+    .url-container {
+        margin: 10px 0;
+        padding: 12px;
+        word-break: break-all;
+    }
+
+    .custom-tooltip {
+        max-width: 200px;
+        font-size: 14px;
+    }
 }

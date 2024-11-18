@@ -28,6 +28,21 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return null;
 };
 
+const formatDuration = (seconds: number): string => {
+    if (seconds < 60) {
+        return `${seconds} seconds`;
+    }
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    if (minutes === 1) {
+        return remainingSeconds > 0 ? `1 minute ${remainingSeconds} seconds` : '1 minute';
+    }
+
+    return remainingSeconds > 0 ? `${minutes} minutes ${remainingSeconds} seconds` : `${minutes} minutes`;
+};
+
 const VerificationPage = () => {
     const { id } = useParams<{ id: string }>();
     const [content, setContent] = useState<string>('');
@@ -49,38 +64,20 @@ const VerificationPage = () => {
 
                 setContent(data.document.content);
 
-                const chartPoints: ChartData[] = [];
-                const windowSize = 5;
-
-                data.keypresses.forEach((press: any, index: number) => {
-                    let typingSpeed = 0;
-                    if (index >= windowSize) {
-                        const recentPresses = data.keypresses.slice(index - windowSize, index + 1);
-                        const timeSpan = new Date(recentPresses[recentPresses.length - 1].timestamp).getTime() -
-                            new Date(recentPresses[0].timestamp).getTime();
-                        typingSpeed = Math.round((recentPresses.length * 60 * 1000) / timeSpan);
-                    }
-
-                    chartPoints.push({
+                if (data.keypresses?.length > 0) {
+                    const chartPoints = data.keypresses.map((press: any) => ({
                         time: new Date(press.timestamp).toLocaleTimeString(),
-                        charactersTyped: index + 1,
-                        typingSpeed: typingSpeed,
+                        charactersTyped: press.total_characters,
+                        typingSpeed: press.typing_speed,
                         character: press.character
-                    });
-                });
+                    }));
 
-                setChartData(chartPoints);
-
-                if (data.keypresses.length > 0) {
-                    const startTime = new Date(data.keypresses[0].timestamp).getTime();
-                    const endTime = new Date(data.keypresses[data.keypresses.length - 1].timestamp).getTime();
-                    const durationSeconds = (endTime - startTime) / 1000;
-                    const averageSpeed = Math.round((data.keypresses.length) / (durationSeconds / 60));
+                    setChartData(chartPoints);
 
                     setStatistics({
-                        totalCharacters: data.keypresses.length,
-                        duration: durationSeconds,
-                        averageSpeed: averageSpeed
+                        totalCharacters: data.document.total_characters,
+                        duration: data.document.time_taken_seconds,
+                        averageSpeed: data.document.final_typing_speed
                     });
                 }
             } catch (error) {
@@ -137,28 +134,28 @@ const VerificationPage = () => {
                                         </LineChart>
                                     </ResponsiveContainer>
                                 </div>
+
+                                {statistics && (
+                                    <div className="chart-box p-4">
+                                        <h2 className="chart-subtitle">Typing Statistics</h2>
+                                        <div className="stats-grid">
+                                            <div className="stat-item">
+                                                <h3>Total Characters</h3>
+                                                <p className="stat-value">{statistics.totalCharacters}</p>
+                                            </div>
+                                            <div className="stat-item">
+                                                <h3>Time Taken</h3>
+                                                <p className="stat-value">{formatDuration(statistics.duration)}</p>
+                                            </div>
+                                            <div className="stat-item">
+                                                <h3>Average Speed</h3>
+                                                <p className="stat-value">{statistics.averageSpeed} CPM</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
-
-                        {statistics && (
-                            <div className="chart-box mt-4 p-4">
-                                <h2 className="chart-subtitle mb-4">Typing Statistics</h2>
-                                <div className="grid grid-cols-1 gap-4">
-                                    <div className="stat-item">
-                                        <p className="font-bold">Total Characters</p>
-                                        <p>{statistics.totalCharacters}</p>
-                                    </div>
-                                    <div className="stat-item">
-                                        <p className="font-bold">Time Taken</p>
-                                        <p>{Math.round(statistics.durationseconds)} seconds</p>
-                                    </div>
-                                    <div className="stat-item">
-                                        <p className="font-bold">Average Speed</p>
-                                        <p>{statistics.averageSpeed} CPM</p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
                     </div>
                 </div>
             </div>
