@@ -39,7 +39,7 @@ const VerificationPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/api/verify/${id}`);
+                const response = await fetch(`https://hammerhead-app-2-hz4n4.ondigitalocean.app/api/verify/${id}`);
                 const data = await response.json();
 
                 // Set content and document info

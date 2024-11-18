@@ -41,7 +41,7 @@ const TextEditor = () => {
     const [previewMode, setPreviewMode] = useState<boolean>(false);
     const [submittedUrl, setSubmittedUrl] = useState<string>('');
     const [documentId, setDocumentId] = useState<string | null>(null);
-    const API_BASE_URL = 'http://localhost:5000';
+    const API_BASE_URL = 'https://hammerhead-app-2-hz4n4.ondigitalocean.app';
 
     useEffect(() => {
         const createDocument = async () => {
