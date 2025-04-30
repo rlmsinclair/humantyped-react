@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
@@ -68,11 +68,31 @@ const VerificationPage = () => {
     const [chartData, setChartData] = useState<ChartData[]>([]);
     const [statistics, setStatistics] = useState<any>(null);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    
+    // State for zoom and pan functionality
+    const [zoomLevel, setZoomLevel] = useState(1);
+    const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+    const [isFullScreen, setIsFullScreen] = useState(false);
+    
+    // Refs for fullscreen API
+    const chartContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const handleResize = () => setWindowWidth(window.innerWidth);
         window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        
+        // Add fullscreen change event listener
+        const handleFullScreenChange = () => {
+            setIsFullScreen(!!document.fullscreenElement);
+        };
+        document.addEventListener('fullscreenchange', handleFullScreenChange);
+        
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            document.removeEventListener('fullscreenchange', handleFullScreenChange);
+        };
     }, []);
 
     useEffect(() => {
@@ -123,35 +143,113 @@ const VerificationPage = () => {
                         <div className="chart-container">
                             <h2 className="chart-title">Typing Analysis</h2>
                             <div className="chart-wrapper">
-                                <div className="chart-box">
-                                    <h3 className="chart-subtitle">Typing Speed</h3>
-                                    <ResponsiveContainer width="100%" height={250}>
-                                        <LineChart
-                                            data={chartData}
-                                            margin={{top: 5, right: 10, left: -20, bottom: 5}}
+                                <div 
+                                    className={`chart-box ${isFullScreen ? 'fullscreen' : ''}`} 
+                                    ref={chartContainerRef}
+                                    onMouseDown={(e) => {
+                                        if (e.button === 0) { // Left mouse button
+                                            setIsDragging(true);
+                                            setDragStart({ x: e.clientX, y: e.clientY });
+                                        }
+                                    }}
+                                    onMouseMove={(e) => {
+                                        if (isDragging) {
+                                            const dx = e.clientX - dragStart.x;
+                                            const dy = e.clientY - dragStart.y;
+                                            setPanPosition({
+                                                x: panPosition.x + dx,
+                                                y: panPosition.y + dy
+                                            });
+                                            setDragStart({ x: e.clientX, y: e.clientY });
+                                        }
+                                    }}
+                                    onMouseUp={() => setIsDragging(false)}
+                                    onMouseLeave={() => setIsDragging(false)}
+                                    onWheel={(e) => {
+                                        e.preventDefault();
+                                        const newZoomLevel = Math.max(0.5, Math.min(5, zoomLevel - e.deltaY * 0.001));
+                                        setZoomLevel(newZoomLevel);
+                                    }}
+                                    style={{ 
+                                        cursor: isDragging ? 'grabbing' : 'grab',
+                                        position: 'relative'
+                                    }}
+                                >
+                                    <div className="chart-controls">
+                                        <button 
+                                            className="chart-control-btn"
+                                            onClick={() => setZoomLevel(Math.min(5, zoomLevel + 0.1))}
+                                            title="Zoom In"
                                         >
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#374151"/>
-                                            <XAxis
-                                                dataKey="time"
-                                                stroke="#9CA3AF"
-                                                tick={{fill: '#9CA3AF', fontSize: windowWidth < 768 ? 10 : 12}}
-                                                interval={windowWidth < 768 ? 2 : 0}
-                                            />
-                                            <YAxis
-                                                stroke="#9CA3AF"
-                                                tick={{fill: '#9CA3AF', fontSize: windowWidth < 768 ? 10 : 12}}
-                                            />
-                                            <Tooltip content={<CustomTooltip/>}/>
-                                            <Line
-                                                type="monotone"
-                                                dataKey="typingSpeed"
-                                                name="Typing Speed (CPM)"
-                                                stroke="#60A5FA"
-                                                strokeWidth={2}
-                                                dot={windowWidth >= 768}
-                                            />
-                                        </LineChart>
-                                    </ResponsiveContainer>
+                                            +
+                                        </button>
+                                        <button 
+                                            className="chart-control-btn"
+                                            onClick={() => setZoomLevel(Math.max(0.5, zoomLevel - 0.1))}
+                                            title="Zoom Out"
+                                        >
+                                            -
+                                        </button>
+                                        <button 
+                                            className="chart-control-btn"
+                                            onClick={() => {
+                                                setZoomLevel(1);
+                                                setPanPosition({ x: 0, y: 0 });
+                                            }}
+                                            title="Reset View"
+                                        >
+                                            ↺
+                                        </button>
+                                        <button 
+                                            className="chart-control-btn"
+                                            onClick={() => {
+                                                if (isFullScreen) {
+                                                    document.exitFullscreen();
+                                                } else if (chartContainerRef.current) {
+                                                    chartContainerRef.current.requestFullscreen();
+                                                }
+                                            }}
+                                            title={isFullScreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+                                        >
+                                            {isFullScreen ? "⤓" : "⤢"}
+                                        </button>
+                                    </div>
+                                    
+                                    <h3 className="chart-subtitle">Typing Speed</h3>
+                                    <div style={{ 
+                                        transform: `scale(${zoomLevel}) translate(${panPosition.x / zoomLevel}px, ${panPosition.y / zoomLevel}px)`,
+                                        transformOrigin: 'center',
+                                        width: '100%',
+                                        height: isFullScreen ? 'calc(100vh - 150px)' : '250px'
+                                    }}>
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <LineChart
+                                                data={chartData}
+                                                margin={{top: 5, right: 10, left: -20, bottom: 5}}
+                                            >
+                                                <CartesianGrid strokeDasharray="3 3" stroke="#374151"/>
+                                                <XAxis
+                                                    dataKey="time"
+                                                    stroke="#9CA3AF"
+                                                    tick={{fill: '#9CA3AF', fontSize: windowWidth < 768 ? 10 : 12}}
+                                                    interval={windowWidth < 768 ? 2 : 0}
+                                                />
+                                                <YAxis
+                                                    stroke="#9CA3AF"
+                                                    tick={{fill: '#9CA3AF', fontSize: windowWidth < 768 ? 10 : 12}}
+                                                />
+                                                <Tooltip content={<CustomTooltip/>}/>
+                                                <Line
+                                                    type="monotone"
+                                                    dataKey="typingSpeed"
+                                                    name="Typing Speed (CPM)"
+                                                    stroke="#60A5FA"
+                                                    strokeWidth={2}
+                                                    dot={windowWidth >= 768}
+                                                />
+                                            </LineChart>
+                                        </ResponsiveContainer>
+                                    </div>
                                 </div>
 
                                 {statistics && (

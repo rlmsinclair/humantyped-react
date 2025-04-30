@@ -173,6 +173,48 @@ html, body {
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 20px;
+    position: relative;
+}
+
+.chart-box.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    padding: 30px;
+    margin: 0;
+    border-radius: 0;
+    overflow: auto;
+}
+
+.chart-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+    z-index: 10;
+}
+
+.chart-control-btn {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #374151;
+    border: 1px solid #4B5563;
+    border-radius: 4px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.chart-control-btn:hover {
+    background-color: #4B5563;
 }
 
 .custom-tooltip {
