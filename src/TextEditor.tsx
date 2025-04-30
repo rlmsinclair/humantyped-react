@@ -103,11 +103,9 @@ const TextEditor = () => {
     const handleTextChange = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newContent = e.target.value;
         let newChar: string;
-        let isBackspace = false;
         
         if (newContent.length < content.length) {
             // This is a backspace
-            isBackspace = true;
             newChar = "BACKSPACE"; // Special character to represent backspace
         } else {
             // This is a regular character
