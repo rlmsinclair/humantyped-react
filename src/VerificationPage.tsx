@@ -18,7 +18,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
             <div className="custom-tooltip">
                 <p className="tooltip-time">Time: {label}</p>
                 <p className="tooltip-character">
-                    Character: "{data.character === ' ' ? '⎵' : data.character}"
+                    Character: "{data.character === ' ' ? '⎵' : data.character === 'BACKSPACE' ? '⌫' : data.character}"
                 </p>
                 <p className="tooltip-count">Total Characters: {data.charactersTyped}</p>
                 <p className="tooltip-speed">Typing Speed: {data.typingSpeed} CPM</p>

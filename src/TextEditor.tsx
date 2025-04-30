@@ -22,7 +22,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
             <div className="custom-tooltip">
                 <p className="tooltip-time">Time: {label}</p>
                 <p className="tooltip-character">
-                    Character: "{data.character === ' ' ? '⎵' : data.character}"
+                    Character: "{data.character === ' ' ? '⎵' : data.character === 'BACKSPACE' ? '⌫' : data.character}"
                 </p>
                 <p className="tooltip-count">Total Characters: {data.charactersTyped}</p>
                 <p className="tooltip-speed">Typing Speed: {data.typingSpeed} CPM</p>
@@ -102,12 +102,18 @@ const TextEditor = () => {
 
     const handleTextChange = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newContent = e.target.value;
+        let newChar: string;
+        let isBackspace = false;
+        
         if (newContent.length < content.length) {
-            setContent(newContent);
-            return;
+            // This is a backspace
+            isBackspace = true;
+            newChar = "BACKSPACE"; // Special character to represent backspace
+        } else {
+            // This is a regular character
+            newChar = newContent.slice(-1);
         }
-
-        const newChar = newContent.slice(-1);
+        
         const newKeyPress = {
             character: newChar,
             timestamp: Date.now(),
